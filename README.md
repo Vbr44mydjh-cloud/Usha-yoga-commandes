@@ -1,1 +1,475 @@
 # Usha-yoga-commandes
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Usha Yoga</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a1a1a; }
+.header { background: #1A2940; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-title { color: #fff; font-size: 14px; font-weight: 700; letter-spacing: .5px; }
+.tabs { display: flex; gap: 6px; }
+.tab-btn { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; font-family: inherit; transition: all .15s; }
+.tab-btn.active { background: #fff; color: #1A2940; }
+.tab-btn.inactive { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+.section { display: none; padding: 10px; }
+.section.visible { display: block; }
+.nav { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+.nav button, .sub-nav button { font-family: inherit; cursor: pointer; border-radius: 7px; }
+.nav button { font-size: 11px; padding: 5px 10px; border: 1px solid #ccc; background: #fff; color: #333; }
+.sub-nav { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 7px; }
+.sub-nav button { font-size: 10px; padding: 4px 8px; border: 1px solid #ccc; background: #eee; color: #555; }
+.legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 7px; font-size: 9px; color: #666; background: #fff; padding: 5px 8px; border-radius: 7px; border: 1px solid #e0e0e0; align-items: center; }
+.legend span { display: flex; align-items: center; gap: 3px; }
+.dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.stats-row { display: flex; gap: 5px; margin-bottom: 7px; flex-wrap: wrap; }
+.stat { background: #fff; border-radius: 7px; padding: 6px 4px; flex: 1; text-align: center; border: 1px solid #e0e0e0; min-width: 60px; }
+.stat .n { font-size: 15px; font-weight: 700; }
+.stat .l { font-size: 8px; color: #999; margin-top: 1px; }
+.section-title { font-size: 12px; font-weight: 700; border-bottom: 2px solid; padding-bottom: 4px; margin-bottom: 7px; }
+.table-wrap { background: #fff; border-radius: 9px; border: 1px solid #e0e0e0; overflow-x: auto; margin-bottom: 10px; }
+table { width: 100%; border-collapse: collapse; }
+thead th { color: #fff; padding: 6px 3px; text-align: center; font-size: 8px; font-weight: 600; }
+thead th.left { text-align: left; padding-left: 7px; }
+tbody tr { border-bottom: 1px solid #f0f0f0; }
+td { padding: 4px 3px; vertical-align: middle; font-size: 10px; }
+td.left { padding-left: 7px; }
+td.center { text-align: center; }
+.name-input { width: 100%; font-size: 10px; border: 1px solid #ddd; border-radius: 4px; padding: 3px 4px; font-family: inherit; background: #fff; }
+.qty-input { width: 28px; font-size: 10px; border: 1px solid #ccc; border-radius: 3px; padding: 2px; text-align: center; font-family: inherit; }
+.col-input { width: 56px; font-size: 9px; border: 1px solid #ccc; border-radius: 3px; padding: 2px; font-family: inherit; margin-top: 2px; }
+.reg-input { width: 50px; font-size: 9px; border: 1px solid #ddd; border-radius: 4px; padding: 3px 2px; font-family: inherit; text-align: center; }
+.stepper { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.stepper button { width: 20px; height: 20px; border: 1px solid #2C5F8A; border-radius: 4px; background: #fff; color: #2C5F8A; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; font-family: inherit; }
+.stepper .val { font-size: 11px; font-weight: 700; color: #1A3A5C; min-width: 12px; text-align: center; }
+.cb { width: 22px; height: 22px; border: 2px solid #ccc; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; background: #fff; font-size: 12px; font-weight: 700; user-select: none; -webkit-user-select: none; }
+.recap-box { border: 1px solid #d0d8e4; border-radius: 9px; overflow: hidden; background: #fff; margin-bottom: 20px; }
+.recap-header { color: #fff; padding: 8px 12px; font-size: 12px; font-weight: 700; }
+.recap-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.recap-cell { padding: 8px 12px; border-bottom: 1px solid #eee; }
+.recap-cell:nth-child(odd) { border-right: 1px solid #eee; }
+.rc-label { font-size: 8px; color: #999; text-transform: uppercase; letter-spacing: .3px; margin-bottom: 2px; }
+.rc-val { font-size: 16px; font-weight: 700; }
+.recap-row { padding: 5px 12px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; font-size: 9px; color: #555; }
+.recap-note { padding: 5px 12px; font-size: 8px; color: #ccc; border-top: 1px solid #eee; }
+.recap-section { padding: 4px 12px 2px; font-size: 8px; color: #888; border-top: 1px solid #eee; background: #faf8fc; }
+.btn-add { font-size: 10px; padding: 5px 10px; border-radius: 7px; border: 1px dashed; background: #fff; cursor: pointer; width: 100%; margin-bottom: 12px; font-family: inherit; }
+.save-status { font-size: 9px; height: 14px; margin-bottom: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-title">🌿 Usha Yoga</span>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('balles')">🎾 Balles</button>
+    <button class="tab-btn inactive" onclick="showTab('yoga')">🧘 Commandes</button>
+  </div>
+</div>
+
+<!-- BALLES -->
+<div class="section visible" id="sec-balles">
+  <div style="max-width:600px;margin:0 auto;padding-top:4px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px">
+      <div style="font-size:10px;font-weight:700;color:#1A3A5C;text-transform:uppercase">Revente Balles de Tennis</div>
+      <button onclick="resetBalles()" style="font-size:9px;padding:3px 8px;border-radius:5px;border:1px solid #E24B4A;background:#fff;color:#E24B4A;cursor:pointer;font-family:inherit">🗑 Réinit.</button>
+    </div>
+    <div class="nav" id="b-city-nav"></div>
+    <div class="sub-nav" id="b-sess-nav"></div>
+    <div class="legend">
+      <span><div class="dot" style="background:#2C5F8A"></div> Réglé</span>
+      <span><div class="dot" style="background:#1D9E75"></div> Distribué</span>
+      <span><div class="dot" style="background:#185FA5"></div> Facturé</span>
+      <span><div class="dot" style="background:#E24B4A"></div> Excl. CA</span>
+    </div>
+    <div class="stats-row" id="b-stats"></div>
+    <div class="section-title" id="b-title" style="color:#2C5F8A;border-color:#2C5F8A"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th class="left" style="background:#2C5F8A;width:26%">Prénom & Nom</th>
+          <th style="background:#2C5F8A;width:14%">Paires</th>
+          <th style="background:#2C5F8A;width:14%">Règlement</th>
+          <th style="background:#2C5F8A;width:11%">Réglé</th>
+          <th style="background:#2C5F8A;width:11%">Distribué</th>
+          <th style="background:#2C5F8A;width:11%">Facturé</th>
+          <th style="background:#2C5F8A;width:13%">Excl. CA</th>
+        </tr></thead>
+        <tbody id="b-tbody"></tbody>
+      </table>
+    </div>
+    <div class="recap-box" id="b-recap"></div>
+  </div>
+</div>
+
+<!-- YOGA -->
+<div class="section" id="sec-yoga">
+  <div style="max-width:860px;margin:0 auto;padding-top:4px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+      <div style="font-size:10px;font-weight:700;color:#5B3A6E;text-transform:uppercase">Commandes Matériel Chin Mudra</div>
+      <span class="save-status" id="y-save" style="color:#1D9E75"></span>
+    </div>
+    <div class="nav" id="y-city-nav"></div>
+    <div class="sub-nav" id="y-sess-nav"></div>
+    <div class="legend">
+      <span><div class="dot" style="background:#E67E22"></div> Payé</span>
+      <span><div class="dot" style="background:#1D9E75"></div> Remis</span>
+      <span><div class="dot" style="background:#E24B4A"></div> Annulé</span>
+    </div>
+    <div class="stats-row" id="y-stats"></div>
+    <div class="section-title" id="y-title" style="color:#8B5E9E;border-color:#8B5E9E"></div>
+    <div class="table-wrap">
+      <table id="y-table" style="min-width:700px">
+        <thead>
+          <tr id="y-thead1"></tr>
+          <tr id="y-thead2"></tr>
+        </thead>
+        <tbody id="y-tbody"></tbody>
+      </table>
+    </div>
+    <button class="btn-add" onclick="addYogaRow()" style="color:#8B5E9E;border-color:#8B5E9E">+ Ajouter une ligne</button>
+    <div class="recap-box" id="y-recap"></div>
+  </div>
+</div>
+
+<script>
+// ── ONGLETS ──────────────────────────────────────
+function showTab(t) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("visible"));
+  document.getElementById("sec-"+t).classList.add("visible");
+  document.querySelectorAll(".tab-btn").forEach((b,i) => {
+    b.className = "tab-btn " + (["balles","yoga"][i]===t ? "active" : "inactive");
+  });
+}
+
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+
+// ── BALLES ───────────────────────────────────────
+const PRIX_TTC=15, ACHAT_TTC=8.78, TVA=0.20;
+const MARGE_HT=(PRIX_TTC-ACHAT_TTC)/(1+TVA);
+
+const BDATA={
+  "Bruges":{
+    "Lundi 18h":[{n:"Eulalie Pineau",b:1},{n:"Hélène Garcia",b:1},{n:"Célia Gauthier",b:1},{n:"Céline Girardeau",b:1},{n:"Laure Maxel",b:1},{n:"Jocelyne Morin",b:2},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+    "Lundi 19h45":[{n:"Coralie Voirin",b:1},{n:"Fabienne Laplace-Toulouse",b:1},{n:"Agnès Bréant",b:1},{n:"Laura Guillermain",b:1},{n:"Pascale Luquet",b:2},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+    "Jeudi 18h":[{n:"Céline Lejeune",b:1},{n:"Hélène Anné",b:1},{n:"Marie Monnet",b:1},{n:"Sophie Uzic",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+    "Jeudi 19h45":[{n:"Oriane Gauthier",b:1},{n:"Elodie Gobin",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+  },
+  "Avensan":{
+    "18h00":[{n:"Aurore Cazenave",b:1},{n:"Maïté Rey",b:1},{n:"Geneviève Lamazouade",b:1},{n:"Patricia Croce",b:1},{n:"Valérie Dechaut-Geneste",b:1},{n:"Martine Musset",b:1},{n:"Graziella Noulhianne",b:1},{n:"Caroline Morin",b:1},{n:"Dominique Lagarde",b:1},{n:"Nathalie Marion",b:1},{n:"Laurence Mercier",b:1},{n:"Sandrine",b:2},{n:"",b:1},{n:"",b:1}],
+    "19h45":[{n:"Claire Le Guillou",b:1},{n:"Estelle Carro",b:1},{n:"Stéphanie Declosmes",b:1},{n:"Hélène Massard",b:1},{n:"Margaux Cavalière",b:1},{n:"Isabelle Monfort",b:2},{n:"Ariane Puntelli",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+  },
+  "Cissac":{
+    "Mardi":[{n:"Hervé",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+    "Mercredi":[{n:"Joanna",b:1},{n:"Alizé",b:1},{n:"Eng Vinh",b:1},{n:"Pauline",b:1},{n:"Dorothée",b:1},{n:"Éric",b:1},{n:"Geneviève Perrier",b:1},{n:"Amélie Tibur",b:1},{n:"Laurence",b:1},{n:"Chantal Candillier",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1}],
+  },
+  "Soussans":{"Groupe":[{n:"Christine Malaquin",b:1},{n:"Nadine Cadiran",b:1},{n:"Francine Vallaeys",b:1},{n:"Catherine Guyot",b:1},{n:"Christelle Crespy",b:1},{n:"Laurent Bourgault",b:1},{n:"Estelle Grégoire",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1},{n:"",b:1}]},
+};
+
+let BCHECKS={};
+function initBChecks(d){
+  Object.keys(d).forEach(c=>{ BCHECKS[c]={};
+    Object.keys(d[c]).forEach(s=>{ BCHECKS[c][s]=d[c][s].map(()=>({regle:false,distrib:false,facture:false,exclu:false,reg:""})); });
+  });
+}
+initBChecks(BDATA);
+
+let bCity="Bruges", bSess="Lundi 18h";
+const BSK="balles_v4";
+
+function bSave(){ try{ localStorage.setItem(BSK, JSON.stringify({BDATA,BCHECKS})); }catch(e){} }
+function bLoad(){
+  try{
+    const raw=localStorage.getItem(BSK); if(!raw) return;
+    const s=JSON.parse(raw);
+    if(s.BDATA) Object.keys(s.BDATA).forEach(c=>{ if(!BDATA[c]) return;
+      Object.keys(s.BDATA[c]).forEach(se=>{ if(!BDATA[c][se]) return;
+        s.BDATA[c][se].forEach((r,i)=>{ if(BDATA[c][se][i]){ BDATA[c][se][i].n=r.n; BDATA[c][se][i].b=r.b; } });
+      });
+    });
+    if(s.BCHECKS) Object.keys(s.BCHECKS).forEach(c=>{ if(!BCHECKS[c]) return;
+      Object.keys(s.BCHECKS[c]).forEach(se=>{ if(!BCHECKS[c][se]) return;
+        s.BCHECKS[c][se].forEach((r,i)=>{ if(BCHECKS[c][se][i]) BCHECKS[c][se][i]=r; });
+      });
+    });
+  }catch(e){}
+}
+
+function fmtB(n){ return n.toFixed(2).replace(".",",")+"\u202f€"; }
+function bGlobal(){ let p=0,ca=0,b=0; const byC={};
+  Object.keys(BDATA).forEach(c=>{ let cp=0;
+    Object.keys(BDATA[c]).forEach(s=>{ BDATA[c][s].forEach((r,i)=>{ const st=BCHECKS[c][s][i]; if(!r.n.trim()||st.exclu)return; p+=r.b;cp+=r.b;ca+=r.b*PRIX_TTC;b+=r.b*MARGE_HT; }); });
+    byC[c]=cp;
+  }); return{p,ca,b,byC};
+}
+function bSessS(){ const rows=BDATA[bCity][bSess],st=BCHECKS[bCity][bSess]; let p=0,r=0,d=0;
+  rows.forEach((row,i)=>{ if(!row.n.trim()||st[i].exclu)return; p+=row.b; if(st[i].regle)r+=row.b; if(st[i].distrib)d+=row.b; }); return{p,r,d};
+}
+
+function bRenderCityNav(){ document.getElementById("b-city-nav").innerHTML=Object.keys(BDATA).map(c=>
+  `<button onclick="bSetCity('${c}')" style="border-color:${c===bCity?'#2C5F8A':'#ccc'};background:${c===bCity?'#2C5F8A':'#fff'};color:${c===bCity?'#fff':'#333'}">${c}</button>`).join(""); }
+function bRenderSessNav(){ const ss=Object.keys(BDATA[bCity]); document.getElementById("b-sess-nav").innerHTML=ss.length<2?"":ss.map(s=>
+  `<button onclick="bSetSess('${s}')" style="border-color:${s===bSess?'#2C5F8A':'#ccc'};background:${s===bSess?'#D6E4F0':'#eee'};color:${s===bSess?'#1A3A5C':'#555'}">${s}</button>`).join(""); }
+function bRenderStats(){ const{p,r,d}=bSessS(); document.getElementById("b-stats").innerHTML=
+  `<div class="stat"><div class="n" style="color:#2C5F8A">${p}</div><div class="l">Paires créneau</div></div>
+   <div class="stat"><div class="n" style="color:#2C5F8A">${r}</div><div class="l">Réglées</div></div>
+   <div class="stat"><div class="n" style="color:#1D9E75">${d}</div><div class="l">Distribuées</div></div>`; }
+
+function bRenderTable(){
+  document.getElementById("b-title").textContent=bCity==="Soussans"?"Soussans":`${bCity} — ${bSess}`;
+  const rows=BDATA[bCity][bSess], st=BCHECKS[bCity][bSess];
+  const CC={regle:"#2C5F8A",distrib:"#1D9E75",facture:"#185FA5",exclu:"#E24B4A"};
+  document.getElementById("b-tbody").innerHTML=rows.map((r,i)=>{
+    const s=st[i], op=s.exclu?0.3:1, bg=i%2===0?"#fff":"#EBF3FA";
+    function cb(f){ return `<div class="cb" onclick="bToggle('${bCity}','${bSess}',${i},'${f}')" style="border-color:${s[f]?CC[f]:'#ccc'};background:${s[f]?CC[f]:'#fff'};color:#fff">${s[f]?(f==="exclu"?"✕":"✓"):""}</div>`; }
+    return `<tr style="background:${bg}">
+      <td class="left" style="opacity:${op}"><input class="name-input" value="${esc(r.n)}" placeholder="Prénom Nom…" onchange="bSetName('${bCity}','${bSess}',${i},this.value)"></td>
+      <td class="center" style="opacity:${op}"><div class="stepper">
+        <button onclick="bChangePaires('${bCity}','${bSess}',${i},-1)">−</button>
+        <span class="val">${r.b}</span>
+        <button onclick="bChangePaires('${bCity}','${bSess}',${i},1)">+</button>
+      </div></td>
+      <td class="center"><input class="reg-input" value="${esc(s.reg)}" placeholder="CB/Esp" onchange="bSetReg('${bCity}','${bSess}',${i},this.value)"></td>
+      <td class="center">${cb('regle')}</td>
+      <td class="center">${cb('distrib')}</td>
+      <td class="center">${cb('facture')}</td>
+      <td class="center">${cb('exclu')}</td>
+    </tr>`;
+  }).join("");
+}
+
+function bRenderRecap(){ const{p,ca,b,byC}=bGlobal(), caHT=ca/(1+TVA), tva=ca-caHT;
+  document.getElementById("b-recap").innerHTML=`
+    <div class="recap-header" style="background:#1A3A5C">Récapitulatif global</div>
+    <div class="recap-grid">
+      <div class="recap-cell"><div class="rc-label">Paires vendues</div><div class="rc-val" style="color:#2C5F8A">${p}</div></div>
+      <div class="recap-cell"><div class="rc-label">CA TTC</div><div class="rc-val" style="color:#2C5F8A">${fmtB(ca)}</div></div>
+      <div class="recap-cell"><div class="rc-label">CA HT</div><div class="rc-val" style="color:#2C5F8A">${fmtB(caHT)}</div></div>
+      <div class="recap-cell"><div class="rc-label">TVA 20%</div><div class="rc-val" style="color:#2C5F8A">${fmtB(tva)}</div></div>
+      <div class="recap-cell" style="grid-column:1/-1"><div class="rc-label">Bénéfice HT</div><div class="rc-val" style="color:#1D9E75;font-size:20px">${fmtB(b)}</div></div>
+    </div>
+    <div class="recap-section">Détail par lieu</div>
+    ${Object.keys(byC).map(c=>`<div class="recap-row"><span>${c}</span><span style="font-weight:700;color:#1A3A5C">${byC[c]} paire${byC[c]>1?"s":""} — ${fmtB(byC[c]*PRIX_TTC)}</span></div>`).join("")}
+    <div class="recap-note">Vente ${PRIX_TTC} € TTC | Achat ${ACHAT_TTC} € TTC | Marge HT/paire : ${fmtB(MARGE_HT)}</div>`; }
+
+window.bToggle=function(c,s,i,f){ const st=BCHECKS[c][s][i]; st[f]=!st[f]; if(f==="exclu"&&st.exclu)st.facture=false; bRenderTable();bRenderStats();bRenderRecap();bSave(); };
+window.bSetName=function(c,s,i,v){ BDATA[c][s][i].n=v; bRenderStats();bRenderRecap();bSave(); };
+window.bChangePaires=function(c,s,i,d){ BDATA[c][s][i].b=Math.max(1,BDATA[c][s][i].b+d); bRenderTable();bRenderStats();bRenderRecap();bSave(); };
+window.bSetReg=function(c,s,i,v){ BCHECKS[c][s][i].reg=v; bSave(); };
+window.bSetCity=function(c){ bCity=c; bSess=Object.keys(BDATA[c])[0]; bRenderCityNav();bRenderSessNav();bRenderTable();bRenderStats();bRenderRecap(); };
+window.bSetSess=function(s){ bSess=s; bRenderSessNav();bRenderTable();bRenderStats();bRenderRecap(); };
+window.resetBalles=function(){ if(!confirm("Réinitialiser les cases et règlements ?"))return;
+  Object.keys(BCHECKS).forEach(c=>Object.keys(BCHECKS[c]).forEach(s=>BCHECKS[c][s].forEach(st=>{st.regle=false;st.distrib=false;st.facture=false;st.exclu=false;st.reg="";})));
+  bSave();bRenderTable();bRenderStats();bRenderRecap(); };
+
+// ── YOGA ─────────────────────────────────────────
+const PORT_TTC=27.77, ACHAT_ART_TTC=41.40+108.00+210.60+35.70+63.00+136.80;
+const PORT_RATIO=PORT_TTC/ACHAT_ART_TTC;
+function aHTp(u){ return (u/1.20)*(1+PORT_RATIO); }
+const PRODS=[
+  {key:"t45",label:"Tapis 4,5mm",vtc:25,  atc:18.00,col:true},
+  {key:"t6", label:"Tapis 6mm",  vtc:30,  atc:22.80,col:true},
+  {key:"bri",label:"Brique",     vtc:8.80,atc:5.95, col:true},
+  {key:"san",label:"Sangle",     vtc:8.55,atc:6.90, col:false},
+  {key:"zaf",label:"Zafu",       vtc:48,  atc:35.10,col:true},
+  {key:"cou",label:"Coussinet",  vtc:15,  atc:9.00, col:true},
+].map(p=>({...p,mHT:(p.vtc/1.20)-aHTp(p.atc)}));
+
+const LIEUX_Y=["Bruges","Avensan","Cissac","Soussans"];
+function mkY(n,t45q,t45c,t6q,t6c,briq,bric,sanq,zafq,zafc,couq,couc){
+  return{name:n||"",paye:false,remis:false,annule:false,reg:"",
+    t45_qty:t45q||"",t45_col:t45c||"",t6_qty:t6q||"",t6_col:t6c||"",
+    bri_qty:briq||"",bri_col:bric||"",san_qty:sanq||"",
+    zaf_qty:zafq||"",zaf_col:zafc||"",cou_qty:couq||"",cou_col:couc||""};
+}
+
+const YDATA_DEFAULT={
+  "Bruges":{
+    "Lundi 18h":[mkY("Jocelyne Morin"),mkY("Stéphanie Gillet")],
+    "Lundi 19h45":[mkY("Agnès Bréant","","","","",2,"Bleu","","","","",""),mkY("Laura Guillermain","","","","","","","",1,"Orange safran","","")],
+    "Jeudi 18h":[mkY("Céline Lejeune","","",1,"Bleu","","","","","","",""),mkY("Marie Monnet","","","","","","",1,1,"Prune","",""),mkY("Sabine Balleau","","","","","","","",1,"Prune","",""),mkY("Céline Girardeau","","","","","","","","","",1,"Prune")],
+    "Jeudi 19h45":[mkY("Elodie Gobin","","","","",2,"Prune",1,"","","","")],
+  },
+  "Avensan":{
+    "18h":[mkY("Graziella Noulhianne","","","","",2,"Jaune safran","","","",1,"Prune"),mkY("Laurence Mercier","","","","","","","",1,"Bleu","","")],
+    "19h45":[mkY("Ariane Garret",1,"","","","","","","","","",""),mkY("Ludivine Barbary","","",1,"Bordeaux","","","",1,"Bleu","",""),mkY("Caroline Wyatt","","","","","","",1,"","","",""),mkY("Muriel Rech","","",1,"Prune","","","","","","","")],
+  },
+  "Cissac":{"Mercredi":[mkY("Chantal Candillier","","",1,"Gris","","","","","","","")]},
+  "Soussans":{"Groupe":[mkY("Nadine Cadiran","","","","",2,"Prune","","","","","")]},
+};
+
+// YDATA est une copie mutable des defaults
+let YDATA=JSON.parse(JSON.stringify(YDATA_DEFAULT));
+
+let yLieu="Bruges", ySess="Lundi 19h45";
+const YSK="yoga_v4";
+let ySaveTimer=null;
+
+function ySave(){
+  clearTimeout(ySaveTimer);
+  const el=document.getElementById("y-save");
+  if(el){el.textContent="💾";el.style.color="#E67E22";}
+  ySaveTimer=setTimeout(()=>{
+    try{
+      localStorage.setItem(YSK, JSON.stringify(YDATA));
+      if(el){el.textContent="✓ Enregistré";el.style.color="#1D9E75";setTimeout(()=>{el.textContent="";},1500);}
+    }catch(e){if(el){el.textContent="⚠ Erreur";el.style.color="#E24B4A";}}
+  },800);
+}
+
+function yLoad(){
+  try{
+    const raw=localStorage.getItem(YSK); if(!raw) return;
+    const saved=JSON.parse(raw);
+    // Restaure complètement YDATA depuis le localStorage
+    Object.keys(saved).forEach(l=>{
+      if(!YDATA[l]) YDATA[l]={};
+      Object.keys(saved[l]).forEach(se=>{
+        YDATA[l][se]=saved[l][se];
+      });
+    });
+  }catch(e){ console.error("yLoad error",e); }
+}
+
+function fmtY(n){ if(n===0)return"0 €"; return(Number.isInteger(n)?n.toFixed(0):n.toFixed(2).replace(".",","))+" €"; }
+function calcY(row){ if(row.annule)return{ttc:0,benef:0}; let ttc=0,benef=0;
+  PRODS.forEach(p=>{const q=parseInt(row[p.key+"_qty"])||0;ttc+=q*p.vtc;benef+=q*p.mHT;}); return{ttc,benef}; }
+
+function yBuildHeaders(){
+  const r1=document.getElementById("y-thead1"), r2=document.getElementById("y-thead2");
+  r1.innerHTML=`<th class="left" rowspan="2" style="background:#8B5E9E;width:14%">Prénom & Nom</th>`+
+    PRODS.map(p=>`<th style="background:#6D4883;width:8%">${p.label}<br><span style="font-weight:400">${p.vtc} €</span></th>`).join("")+
+    ["CA TTC","Bénéf.","Règl.","Payé","Remis","Annulé"].map(h=>`<th rowspan="2" style="background:#8B5E9E;width:6%">${h}</th>`).join("");
+  r2.innerHTML=PRODS.map(p=>`<th style="background:#7A4F8E;font-size:8px;font-weight:400">Qté${p.col?"/Col":""}</th>`).join("");
+}
+
+function yRenderCityNav(){ document.getElementById("y-city-nav").innerHTML=LIEUX_Y.map(l=>
+  `<button onclick="ySetLieu('${l}')" style="border-color:${l===yLieu?'#8B5E9E':'#ccc'};background:${l===yLieu?'#8B5E9E':'#fff'};color:${l===yLieu?'#fff':'#333'}">${l}</button>`).join(""); }
+function yRenderSessNav(){ const ss=Object.keys(YDATA[yLieu]); document.getElementById("y-sess-nav").innerHTML=ss.length<2?"":ss.map(s=>
+  `<button onclick="ySetSess('${s}')" style="border-color:${s===ySess?'#8B5E9E':'#ccc'};background:${s===ySess?'#EDE4F4':'#f0f0f0'};color:${s===ySess?'#5B3A6E':'#555'}">${s}</button>`).join(""); }
+
+function yRenderStats(){ const rows=YDATA[yLieu][ySess]; let nc=0,tca=0,tb=0,np=0,nr=0;
+  rows.forEach(r=>{ if(!r.name||r.annule)return; const{ttc,benef}=calcY(r); nc++;tca+=ttc;tb+=benef; if(r.paye)np++; if(r.remis)nr++; });
+  document.getElementById("y-stats").innerHTML=`
+    <div class="stat"><div class="n" style="color:#8B5E9E">${nc}</div><div class="l">Commandes</div></div>
+    <div class="stat"><div class="n" style="color:#5B3A6E">${fmtY(tca)}</div><div class="l">CA TTC</div></div>
+    <div class="stat"><div class="n" style="color:#1D9E75">${fmtY(tb)}</div><div class="l">Bénéf. HT</div></div>
+    <div class="stat"><div class="n" style="color:#E67E22">${np}</div><div class="l">Payées</div></div>
+    <div class="stat"><div class="n" style="color:#1D9E75">${nr}</div><div class="l">Remises</div></div>`; }
+
+function yRenderTable(){
+  const ss=Object.keys(YDATA[yLieu]);
+  document.getElementById("y-title").textContent=ss.length===1?yLieu:`${yLieu} — ${ySess}`;
+  const rows=YDATA[yLieu][ySess];
+  document.getElementById("y-tbody").innerHTML=rows.map((row,i)=>{
+    const{ttc,benef}=calcY(row), op=row.annule?0.35:1, bg=i%2===0?"#fff":"#F5EFF9";
+    function cb(f,c,m){ return `<div class="cb" onclick="yToggle('${yLieu}','${ySess}',${i},'${f}')" style="border-color:${row[f]?c:'#bbb'};background:${row[f]?c:'#fff'};color:#fff">${row[f]?m:""}</div>`; }
+    return `<tr style="background:${bg}">
+      <td class="left" style="opacity:${op}"><input class="name-input" value="${esc(row.name)}" placeholder="Nom…" onchange="ySetText('${yLieu}','${ySess}',${i},'name',this.value)"></td>
+      ${PRODS.map(p=>`<td class="center" style="opacity:${op}">
+        <input class="qty-input" type="number" min="0" placeholder="0" value="${row[p.key+'_qty']}" onchange="ySetQty('${yLieu}','${ySess}',${i},'${p.key}_qty',this.value)">
+        ${p.col?`<br><input class="col-input" value="${esc(row[p.key+'_col'])}" placeholder="col…" onchange="ySetText('${yLieu}','${ySess}',${i},'${p.key}_col',this.value)">`:""}</td>`).join("")}
+      <td class="center" style="font-weight:700;color:#5B3A6E;opacity:${op}" id="yttc-${i}">${ttc>0?fmtY(ttc):""}</td>
+      <td class="center" style="font-weight:700;color:#1D9E75;opacity:${op}" id="ybnf-${i}">${benef>0?fmtY(benef):""}</td>
+      <td class="center" style="opacity:${op}"><input class="reg-input" value="${esc(row.reg)}" placeholder="CB…" onchange="ySetText('${yLieu}','${ySess}',${i},'reg',this.value)"></td>
+      <td class="center">${cb('paye','#E67E22','✓')}</td>
+      <td class="center">${cb('remis','#1D9E75','✓')}</td>
+      <td class="center">${cb('annule','#E24B4A','✕')}</td>
+    </tr>`;
+  }).join("");
+}
+
+function yRenderRecap(){ let gCA=0,gB=0,gP=0; const byP={},byL={};
+  // lots min Chin Mudra par produit (du devis)
+  const LOTS={t45:6,t6:6,bri:6,san:6,zaf:6,cou:7};
+  PRODS.forEach(p=>{byP[p.key]={qty:0,ca:0,benef:0,cols:{}};});
+  LIEUX_Y.forEach(l=>{ let lca=0,lb=0;
+    Object.keys(YDATA[l]||{}).forEach(se=>{ (YDATA[l][se]||[]).forEach(r=>{ if(!r.name||r.annule)return;
+      const{ttc,benef}=calcY(r); lca+=ttc;lb+=benef;gCA+=ttc;gB+=benef; if(r.paye)gP+=ttc;
+      PRODS.forEach(p=>{
+        const q=parseInt(r[p.key+"_qty"])||0;
+        byP[p.key].qty+=q;
+        byP[p.key].ca+=q*p.vtc;
+        byP[p.key].benef+=q*p.mHT;
+        if(p.col && q>0){
+          const c=(r[p.key+"_col"]||"").trim()||"(sans couleur)";
+          byP[p.key].cols[c]=(byP[p.key].cols[c]||0)+q;
+        }
+      });
+    }); });
+    byL[l]={ca:lca,benef:lb};
+  });
+
+  // Calcul prise de commande par produit
+  function cmdBlock(p){
+    const qEleves=byP[p.key].qty;
+    const lot=LOTS[p.key];
+    const qACommander=Math.ceil(qEleves/lot)*lot;
+    const qReste=qACommander-qEleves;
+    // bénéfice si on vend le reste à prix plein
+    const benefEleves=byP[p.key].benef;
+    const coutLot=(p.atc/1.20)*(1+PORT_RATIO)*qACommander; // coût HT avec port
+    const caEleves=byP[p.key].ca/1.20; // CA HT élèves
+    const caReste=qReste*(p.vtc/1.20);
+    const benefTotal=caEleves+caReste-coutLot;
+    const isOk=benefTotal>=0;
+    const colsHtml=Object.keys(byP[p.key].cols).length>0
+      ? Object.entries(byP[p.key].cols).map(([c,n])=>`<span style="background:#EDE4F4;color:#5B3A6E;border-radius:4px;padding:1px 5px;font-size:8px;margin:1px;display:inline-block">${n}× ${c}</span>`).join("")
+      : `<span style="color:#ccc;font-size:8px">aucun coloris saisi</span>`;
+    return `<div style="padding:8px 12px;border-bottom:1px solid #f0f0f0">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px">
+        <span style="font-weight:600;font-size:10px;color:#3a3a3a">${p.label}</span>
+        <span style="font-size:9px;background:${isOk?'#E8F8F2':'#FEF0EF'};color:${isOk?'#1D9E75':'#E24B4A'};border-radius:5px;padding:2px 7px;font-weight:700">${isOk?'✅ Bénéficiaire':'❌ Déficitaire'}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin:5px 0;font-size:9px;color:#555">
+        <span>Commandés : <b style="color:#5B3A6E">${qEleves}</b></span>
+        <span>Lot min : <b>${lot}</b></span>
+        <span>À commander : <b style="color:#E67E22">${qACommander}</b></span>
+        <span>Reste pour vous : <b style="color:${qReste>0?'#2C5F8A':'#aaa'}">${qReste}</b></span>
+      </div>
+      <div style="font-size:9px;color:#888;margin-bottom:4px">
+        Bénéf. HT si vous vendez le reste : <b style="color:${isOk?'#1D9E75':'#E24B4A'}">${fmtY(benefTotal)}</b>
+        <span style="color:#ccc"> · Bénéf. élèves seuls : ${fmtY(benefEleves)}</span>
+      </div>
+      <div>${colsHtml}</div>
+    </div>`;
+  }
+
+  document.getElementById("y-recap").innerHTML=`
+    <div class="recap-header" style="background:#5B3A6E">Récapitulatif global — Usha Yoga</div>
+    <div class="recap-grid">
+      <div class="recap-cell"><div class="rc-label">CA Total TTC</div><div class="rc-val" style="color:#5B3A6E;font-size:18px">${fmtY(gCA)}</div></div>
+      <div class="recap-cell"><div class="rc-label">Bénéfice HT élèves</div><div class="rc-val" style="color:#1D9E75;font-size:18px">${fmtY(gB)}</div></div>
+      <div class="recap-cell"><div class="rc-label">Encaissé</div><div class="rc-val" style="color:#E67E22">${fmtY(gP)}</div></div>
+      <div class="recap-cell"><div class="rc-label">Reste à percevoir</div><div class="rc-val" style="color:#E24B4A">${fmtY(gCA-gP)}</div></div>
+    </div>
+    <div class="recap-section" style="font-size:9px;font-weight:700;color:#5B3A6E">📦 Prise de commande Chin Mudra — lots &amp; coloris</div>
+    ${PRODS.map(p=>cmdBlock(p)).join("")}
+    <div class="recap-section">Par lieu</div>
+    ${LIEUX_Y.map(l=>`<div class="recap-row"><span>${l}</span><span><span style="font-weight:700;color:#5B3A6E">CA ${fmtY(byL[l].ca)}</span> <span style="color:#1D9E75;font-weight:600">bénéf. ${fmtY(byL[l].benef)}</span></span></div>`).join("")}
+    <div class="recap-note">Port Chin Mudra ${PORT_TTC} € TTC au prorata · TVA 20 % · Lots min : Sangles/Tapis/Zafu/Briques = 6 · Coussinets = 7</div>`; }
+
+// Fonctions sans re-render table (pour les champs texte — évite la perte de focus)
+window.ySetText=function(l,s,i,k,v){ YDATA[l][s][i][k]=v; yRenderStats(); yRenderRecap(); ySave(); };
+// Quantités : re-render uniquement les cellules CA/bénéf
+window.ySetQty=function(l,s,i,k,v){
+  YDATA[l][s][i][k]=v;
+  const{ttc,benef}=calcY(YDATA[l][s][i]);
+  const te=document.getElementById("yttc-"+i), be=document.getElementById("ybnf-"+i);
+  if(te)te.textContent=ttc>0?fmtY(ttc):"";
+  if(be)be.textContent=benef>0?fmtY(benef):"";
+  yRenderStats(); yRenderRecap(); ySave();
+};
+window.yToggle=function(l,s,i,f){ YDATA[l][s][i][f]=!YDATA[l][s][i][f]; yRenderTable();yRenderStats();yRenderRecap();ySave(); };
+window.ySetLieu=function(l){ yLieu=l; ySess=Object.keys(YDATA[l])[0]; yRenderCityNav();yRenderSessNav();yRenderTable();yRenderStats();yRenderRecap(); };
+window.ySetSess=function(s){ ySess=s; yRenderSessNav();yRenderTable();yRenderStats();yRenderRecap(); };
+window.addYogaRow=function(){ YDATA[yLieu][ySess].push(mkY("")); yRenderTable();yRenderStats();yRenderRecap();ySave(); };
+
+// ── INIT ─────────────────────────────────────────
+bLoad(); bRenderCityNav(); bRenderSessNav(); bRenderTable(); bRenderStats(); bRenderRecap();
+yLoad(); yBuildHeaders(); yRenderCityNav(); yRenderSessNav(); yRenderTable(); yRenderStats(); yRenderRecap();
+</script>
+</body>
+</html>
